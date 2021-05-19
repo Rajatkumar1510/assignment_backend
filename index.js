@@ -15,6 +15,12 @@ app.use("/posts", postRoutes);
 // Authentication route
 app.use("/user", userRoutes);
 
+// home route
+
+app.use("/", (req, res) => {
+  res.send("Server is running");
+});
+
 // database connection url got from mongodb atlas cluster
 const db_url =
   "mongodb+srv://test:test@test.5r6gs.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";

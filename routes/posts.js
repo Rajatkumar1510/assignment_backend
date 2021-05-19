@@ -4,10 +4,21 @@ import auth from "../middleware/auth.js";
 const router = express.Router();
 // all posts
 router.get("/", async (req, res) => {
+  const { page } = req.query;
   try {
-    const Posts = await PostData.find();
+    const LIMIT = 8;
+    const startIndex = (Number(page) - 1) * LIMIT;
+    const total = await PostData.countDocuments({});
+    const Posts = await PostData.find()
+      .sort({ _id: -1 })
+      .limit(LIMIT)
+      .skip(startIndex);
 
-    res.send(Posts);
+    res.json({
+      data: Posts,
+      currentPage: Number(page),
+      numberOfPages: Math.ceil(total / LIMIT),
+    });
   } catch (error) {
     console.log(error);
   }
@@ -17,7 +28,7 @@ router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const post = await PostData.findById(id);
-    res.json(post);
+    res.send(post);
   } catch (error) {
     console.log(error);
   }
